@@ -140,6 +140,20 @@ class StudentDetailPage extends Component
                     $user
                 )
             );
+
+            // Push Notification ke mobile mahasiswa
+            $decisionDisplayLabels = [
+                'approved' => 'Disetujui',
+                'revision_minor' => 'Revisi Minor',
+                'revision_major' => 'Revisi Mayor',
+                'rejected' => 'Tidak Disetujui',
+            ];
+            \App\Services\PushNotificationService::send(
+                $studentUser->expo_push_token,
+                'Keputusan Review Baru',
+                'Dosen memberikan keputusan "' . ($decisionDisplayLabels[$decisionType] ?? '') . '" untuk ' . $submission->title,
+                ['url' => '/(tabs)/revision']
+            );
         }
 
         $this->dispatch('clear-toast');

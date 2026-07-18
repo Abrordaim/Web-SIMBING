@@ -83,6 +83,14 @@ class ScheduleMeeting extends Component
             Mail::to($lecturerUser->email)->queue(
                 new MeetingRescheduledNotification($meeting, $studentUser, $lecturerUser)
             );
+
+            // Push Notification ke mobile dosen
+            \App\Services\PushNotificationService::send(
+                $lecturerUser->expo_push_token,
+                'Jadwal Bimbingan Diubah',
+                $studentUser->name . ' mengajukan perubahan jadwal.',
+                ['url' => '/(tabs)/schedule']
+            );
         }
 
         $this->closeEdit();
@@ -121,6 +129,14 @@ class ScheduleMeeting extends Component
         if ($studentUser && $lecturerUser) {
             Mail::to($studentUser->email)->queue(
                 new MeetingStatusNotification($meeting, 'confirmed', $studentUser, $lecturerUser)
+            );
+
+            // Push Notification ke mobile mahasiswa
+            \App\Services\PushNotificationService::send(
+                $studentUser->expo_push_token,
+                'Jadwal Dikonfirmasi',
+                $lecturerUser->name . ' telah menyetujui jadwal bimbingan.',
+                ['url' => '/(tabs)/schedule']
             );
         }
     }
@@ -173,6 +189,14 @@ class ScheduleMeeting extends Component
         if ($studentUser && $lecturerUser) {
             Mail::to($studentUser->email)->queue(
                 new MeetingStatusNotification($meeting, 'cancelled', $studentUser, $lecturerUser, $this->rejectReason)
+            );
+
+            // Push Notification ke mobile mahasiswa
+            \App\Services\PushNotificationService::send(
+                $studentUser->expo_push_token,
+                'Jadwal Ditolak',
+                $lecturerUser->name . ' membatalkan jadwal bimbingan.',
+                ['url' => '/(tabs)/schedule']
             );
         }
 

@@ -90,17 +90,47 @@ class RevisionFeedback extends Component
             'text'          => $text,
         ]);
 
+        // Push Notification ke lawan bicara
+        $submission = Submission::with('supervision.student.user', 'supervision.lecturer.user')->find($threadId);
+        if ($submission) {
+            $targetUser = $user->isLecturer()
+                ? $submission->supervision?->student?->user
+                : $submission->supervision?->lecturer?->user;
+
+            if ($targetUser) {
+                \App\Services\PushNotificationService::send(
+                    $targetUser->expo_push_token,
+                    'Pesan Revisi Baru',
+                    $user->name . ': ' . \Str::limit($text, 40),
+                    ['url' => '/(tabs)/revision']
+                );
+            }
+        }
+
         $this->replyTexts[$key] = '';
     }
 
     public function resolveThread(int $threadId, int $studentId)
     {
-        $submission = Submission::findOrFail($threadId);
+        $submission = Submission::with('supervision.student.user')->findOrFail($threadId);
 
         // SubmissionPolicy::resolve — hanya dosen pembimbing mahasiswa tsb
         Gate::authorize('resolve', $submission);
 
         $submission->update(['resolved' => !$submission->resolved]);
+
+        // Push Notification ke mahasiswa jika thread ditandai selesai
+        if ($submission->resolved) {
+            $studentUser = $submission->supervision?->student?->user;
+            if ($studentUser) {
+                \App\Services\PushNotificationService::send(
+                    $studentUser->expo_push_token,
+                    'Revisi Selesai',
+                    'Dosen telah menandai dokumen ' . $submission->title . ' sebagai selesai.',
+                    ['url' => '/(tabs)/revision']
+                );
+            }
+        }
     }
 
     public function render()

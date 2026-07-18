@@ -106,6 +106,14 @@ class ThesisSubmission extends Component
             Mail::to($lecturerUser->email)->queue(
                 new NewSubmissionNotification($submission, $lecturerUser, $user)
             );
+
+            // Push Notification ke mobile dosen
+            \App\Services\PushNotificationService::send(
+                $lecturerUser->expo_push_token,
+                'Pengajuan Bimbingan Baru',
+                $user->name . ' telah mengirim pengajuan ' . $this->title,
+                ['url' => '/(tabs)/dashboard']
+            );
         }
 
         $this->reset(['title', 'chapter', 'description', 'meetingDate', 'meetingTime', 'selectedFile', 'selectedSupervisionId']);
