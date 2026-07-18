@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SIMBING — Web-App (Laravel Backend & Web Panel)
 
 Web-App SIMBING berfungsi sebagai backend utama (menyediakan REST API dengan Laravel Sanctum) sekaligus antarmuka web responsif (menggunakan Laravel Blade + Livewire + TailwindCSS) untuk manajemen bimbingan skripsi.
@@ -187,3 +188,7 @@ Jika Anda ingin menjalankannya secara terpisah di terminal yang berbeda:
 - **Koneksi Aplikasi Mobile (API)**: Agar Mobile-App dapat terhubung ke backend ini saat dijalankan di device fisik, pastikan Anda mengubah URL API pada file konfigurasi mobile (`services/api.ts`) ke IP lokal komputer host (misal: `http://192.168.1.10:8000`), bukan `localhost` atau `127.0.0.1`.
 - **Registrasi Google Tanpa Password**: Pengguna yang terdaftar via Google login memiliki field `password` bernilai `null`. Mereka login murni menggunakan Google Sign-In.
 - **File Upload Limits**: Jika mengunggah berkas bimbingan berukuran besar gagal, periksa konfigurasi `upload_max_filesize` dan `post_max_size` pada file `php.ini` sistem Anda.
+=======
+# Web-SIMBING
+SIMBING (Sistem Manajemen BImbingan)
+>>>>>>> 021f374 (Initial commit)
